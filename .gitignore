@@ -1,0 +1,26 @@
+# Dependencias de Node
+node_modules/
+
+# Variables de entorno
+.env
+
+# Archivos de log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de sistema operativo (macOS, Windows, Linux)
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Cobertura de tests (aunque no estemos en fase de pruebas, es buena práctica ignorarla)
+coverage/
+
+# VSC-Code (opcional, si usas VS Code y quieres ignorar su carpeta de configuración)
+.vscode/
+
+# Build artifacts
+dist/
+build/

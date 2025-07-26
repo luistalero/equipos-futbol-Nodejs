@@ -1,0 +1,31 @@
+# Ignorar el directorio de módulos de Node.js, ya que los instalaremos dentro del contenedor
+node_modules/
+
+# Ignorar las variables de entorno, ya que se inyectan a través de docker-compose
+.env
+
+# Ignorar archivos de Git
+.git
+.gitignore
+
+# Ignorar archivos temporales o de caché de IDEs
+.vscode/
+*.swp
+*.bak
+*~
+*.log
+
+# Ignorar archivos de prueba o de desarrollo si los tuvieras (aunque dijimos que no hay fase de pruebas, es buena práctica)
+test/
+tests/
+coverage/
+
+# Ignorar los archivos .dockerignore y Dockerfile
+# No es estrictamente necesario, pero evita que se copien a sí mismos en la imagen
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Ignorar directorios de compilación o transpilación si los tuvieras (ej. si usaras TypeScript)
+dist/
+build/

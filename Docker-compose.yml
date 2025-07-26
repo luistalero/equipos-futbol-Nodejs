@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "1640:3000"
+    environment:
+      NODE_ENV: production
+      DB_HOST: mariadb 
+      DB_USER: ${DB_USER} 
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      UPLOAD_DIR: ${UPLOAD_DIR}
+    depends_on:
+      - mariadb
+    volumes:
+      - ./public/uploads:/src/src/app/public/uploads
+
+  mariadb:
+    image: mariadb:10.6 
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}              
+      MARIADB_USER: ${DB_USER}                  
+      MARIADB_PASSWORD: ${DB_PASSWORD}          
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+volumes:
+  db_data:
