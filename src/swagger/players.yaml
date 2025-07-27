@@ -1,0 +1,337 @@
+tags:
+  - name: Jugadores
+    description: Gestión de los jugadores de los equipos.
+
+paths:
+  /players:
+    post:
+      summary: Crea un nuevo jugador.
+      tags: [Jugadores]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - lastname
+                - birth_date
+                - nationality
+                - position_id
+              properties:
+                name:
+                  type: string
+                  description: Nombre del jugador.
+                  example: Lionel
+                lastname:
+                  type: string
+                  description: Apellido del jugador.
+                  example: Messi
+                birth_date:
+                  type: string
+                  format: date
+                  description: Fecha de nacimiento del jugador (YYYY-MM-DD).
+                  example: 1987-06-24
+                nationality:
+                  type: string
+                  description: Nacionalidad del jugador.
+                  example: Argentina
+                team_id:
+                  type: integer
+                  nullable: true
+                  description: ID del equipo al que pertenece el jugador.
+                  example: 1
+                position_id:
+                  type: integer
+                  description: ID de la posición del jugador.
+                  example: 1
+      responses:
+        201:
+          description: Jugador creado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Jugador creado exitosamente.
+                  player:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Lionel
+                      lastname:
+                        type: string
+                        example: Messi
+                      birth_date:
+                        type: string
+                        example: 1987-06-24
+                      nationality:
+                        type: string
+                        example: Argentina
+                      team_id:
+                        type: integer
+                        nullable: true
+                        example: 1
+                      position_id:
+                        type: integer
+                        example: 1
+        400:
+          description: Datos de entrada inválidos.
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Equipo o Posición no encontrados.
+        500:
+          description: Error interno del servidor.
+    get:
+      summary: Obtiene todos los jugadores.
+      tags: [Jugadores]
+      responses:
+        200:
+          description: Lista de todos los jugadores.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: Lionel
+                    lastname:
+                      type: string
+                      example: Messi
+                    birth_date:
+                      type: string
+                      example: 1987-06-24
+                    nationality:
+                      type: string
+                      example: Argentina
+                    team:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: FC Barcelona
+                      nullable: true
+                      description: Equipo al que pertenece el jugador.
+                    position:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Delantero
+                      description: Posición del jugador.
+        500:
+          description: Error interno del servidor.
+
+  /players/{id}:
+    get:
+      summary: Obtiene un jugador por su ID.
+      tags: [Jugadores]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del jugador a buscar.
+      responses:
+        200:
+          description: Información del jugador.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Lionel
+                  lastname:
+                    type: string
+                    example: Messi
+                  birth_date:
+                    type: string
+                    example: 1987-06-24
+                  nationality:
+                    type: string
+                    example: Argentina
+                  team:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: FC Barcelona
+                    nullable: true
+                    description: Equipo al que pertenece el jugador.
+                  position:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Delantero
+                    description: Posición del jugador.
+        404:
+          description: Jugador no encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Jugador no encontrado.
+        500:
+          description: Error interno del servidor.
+    put:
+      summary: Actualiza un jugador existente por ID.
+      tags: [Jugadores]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del jugador a actualizar.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nuevo nombre del jugador.
+                  example: Cristiano
+                lastname:
+                  type: string
+                  description: Nuevo apellido del jugador.
+                  example: Ronaldo
+                birth_date:
+                  type: string
+                  format: date
+                  description: Nueva fecha de nacimiento (YYYY-MM-DD).
+                  example: 1985-02-05
+                nationality:
+                  type: string
+                  description: Nueva nacionalidad.
+                  example: Portuguesa
+                team_id:
+                  type: integer
+                  nullable: true
+                  description: Nuevo ID del equipo al que pertenece el jugador.
+                  example: 2
+                position_id:
+                  type: integer
+                  description: Nuevo ID de la posición del jugador.
+                  example: 2
+      responses:
+        200:
+          description: Jugador actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Jugador actualizado exitosamente.
+                  player:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Cristiano
+                      lastname:
+                        type: string
+                        example: Ronaldo
+                      birth_date:
+                        type: string
+                        example: 1985-02-05
+                      nationality:
+                        type: string
+                        example: Portuguesa
+                      team_id:
+                        type: integer
+                        nullable: true
+                        example: 2
+                      position_id:
+                        type: integer
+                        example: 2
+        400:
+          description: Datos de entrada inválidos.
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Jugador, Equipo o Posición no encontrados.
+        500:
+          description: Error interno del servidor.
+    delete:
+      summary: Elimina un jugador por su ID.
+      tags: [Jugadores]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del jugador a eliminar.
+      responses:
+        200:
+          description: Jugador eliminado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Jugador eliminado exitosamente.
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Jugador no encontrado.
+        500:
+          description: Error interno del servidor.

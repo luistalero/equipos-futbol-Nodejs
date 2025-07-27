@@ -1,0 +1,254 @@
+# src/swagger/teams.yaml
+tags:
+  - name: Equipos
+    description: Gestión de los equipos de fútbol.
+
+paths:
+  /teams:
+    post:
+      summary: Crea un nuevo equipo.
+      tags: [Equipos]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Nombre único del equipo.
+                  example: Atlético Nacional
+                city:
+                  type: string
+                  description: Ciudad del equipo.
+                  example: Medellín
+                logo_url:
+                  type: string
+                  format: url
+                  description: URL del logo del equipo (opcional).
+                  example: http://example.com/logo_nacional.png
+      responses:
+        201:
+          description: Equipo creado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Equipo creado exitosamente.
+                  team:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Atlético Nacional
+                      city:
+                        type: string
+                        example: Medellín
+                      logo_url:
+                        type: string
+                        example: http://example.com/logo_nacional.png
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        409:
+          description: El equipo con ese nombre ya existe.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: El equipo con ese nombre ya existe.
+        500:
+          description: Error interno del servidor.
+    get:
+      summary: Obtiene todos los equipos.
+      tags: [Equipos]
+      responses:
+        200:
+          description: Lista de todos los equipos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: Atlético Nacional
+                    city:
+                      type: string
+                      example: Medellín
+                    logo_url:
+                      type: string
+                      example: http://example.com/logo_nacional.png
+        500:
+          description: Error interno del servidor.
+
+  /teams/{id}:
+    get:
+      summary: Obtiene un equipo por su ID.
+      tags: [Equipos]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del equipo a buscar.
+      responses:
+        200:
+          description: Información del equipo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Atlético Nacional
+                  city:
+                    type: string
+                    example: Medellín
+                  logo_url:
+                    type: string
+                    example: http://example.com/logo_nacional.png
+        404:
+          description: Equipo no encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Equipo no encontrado.
+        500:
+          description: Error interno del servidor.
+    put:
+      summary: Actualiza un equipo existente por ID.
+      tags: [Equipos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del equipo a actualizar.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nuevo nombre del equipo.
+                  example: Millonarios FC
+                city:
+                  type: string
+                  description: Nueva ciudad del equipo.
+                  example: Bogotá
+                logo_url:
+                  type: string
+                  format: url
+                  description: Nueva URL del logo del equipo.
+                  example: http://example.com/logo_millonarios.png
+      responses:
+        200:
+          description: Equipo actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Equipo actualizado exitosamente.
+                  team:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Millonarios FC
+                      city:
+                        type: string
+                        example: Bogotá
+                      logo_url:
+                        type: string
+                        example: http://example.com/logo_millonarios.png
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Equipo no encontrado.
+        409:
+          description: Ya existe otro equipo con ese nombre.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Ya existe otro equipo con ese nombre.
+        500:
+          description: Error interno del servidor.
+    delete:
+      summary: Elimina un equipo por su ID.
+      tags: [Equipos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del equipo a eliminar.
+      responses:
+        200:
+          description: Equipo eliminado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Equipo eliminado exitosamente.
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Equipo no encontrado.
+        500:
+          description: Error interno del servidor.

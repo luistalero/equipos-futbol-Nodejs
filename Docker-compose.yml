@@ -1,33 +1,39 @@
-version: '3.8'
+version: '3.8' # Versión de la sintaxis de Docker Compose
 
 services:
+  # Servicio de la aplicación Node.js
   app:
-    build: .
+    build: . # Construye la imagen de la aplicación desde el Dockerfile en el directorio actual
     ports:
-      - "1640:3000"
-    environment:
-      NODE_ENV: production
-      DB_HOST: mariadb 
-      DB_USER: ${DB_USER} 
+      - "1640:3000" # Mapea el puerto 1640 del host al puerto 3000 del contenedor
+    environment: # Variables de entorno que se inyectarán en el contenedor de la aplicación
+      NODE_ENV: production # Indicamos que es un entorno de producción para el contenedor
+      DB_HOST: mariadb       # <--- ¡Importante! Nombre del servicio de MariaDB dentro de la red Docker
+      DB_USER: ${DB_USER}    # Estas variables son las que usará la app dentro del contenedor
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      DB_DIALECT: mariadb    # <--- Especifica el dialecto para el entorno Docker
       JWT_SECRET: ${JWT_SECRET}
       UPLOAD_DIR: ${UPLOAD_DIR}
-    depends_on:
+    depends_on: # Indica que este servicio depende de la base de datos para iniciar
       - mariadb
     volumes:
+      # Monta el volumen para la persistencia de las imágenes subidas
+      # La ruta interna debe coincidir con donde tu app guarda los archivos
       - ./public/uploads:/src/src/app/public/uploads
 
+  # Servicio de la base de datos MariaDB
   mariadb:
-    image: mariadb:10.6 
-    environment:
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MARIADB_DATABASE: ${DB_NAME}              
-      MARIADB_USER: ${DB_USER}                  
-      MARIADB_PASSWORD: ${DB_PASSWORD}          
+    image: mariadb:10.6 # Usa la imagen oficial de MariaDB versión 10.6
+    environment: # Variables de entorno para configurar MariaDB
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD} # Contraseña para el usuario root de MariaDB
+      MARIADB_DATABASE: ${DB_NAME}               # Nombre de la base de datos a crear
+      MARIADB_USER: ${DB_USER}                   # Usuario de la base de datos
+      MARIADB_PASSWORD: ${DB_PASSWORD}           # Contraseña del usuario
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql # Monta un volumen para la persistencia de los datos de la base de datos
     ports:
-      - "3307:3306"
+      - "3307:3306" # Expone el puerto de MariaDB (para conectarte con un cliente externo si lo necesitas)
+
 volumes:
-  db_data:
+  db_data: # Define el volumen con nombre para la persistencia de datos de MariaDB
