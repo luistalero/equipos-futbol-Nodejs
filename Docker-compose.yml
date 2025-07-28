@@ -12,7 +12,7 @@ services:
       DB_USER: ${DB_USER}    # Estas variables son las que usará la app dentro del contenedor
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      DB_DIALECT: mariadb    # <--- Especifica el dialecto para el entorno Docker
+      DB_DIALECT: mysql    # <--- Especifica el dialecto para el entorno Docker
       JWT_SECRET: ${JWT_SECRET}
       UPLOAD_DIR: ${UPLOAD_DIR}
     depends_on: # Indica que este servicio depende de la base de datos para iniciar

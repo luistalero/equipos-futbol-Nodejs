@@ -1,23 +1,20 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config(); // Carga las variables de entorno desde .env
+require('dotenv').config(); 
 
-// Configuración de la base de datos obtenida de las variables de entorno
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_HOST = process.env.DB_HOST;
-const DB_PORT = process.env.DB_PORT; // Puerto para conexiones locales (PostgreSQL)
-const DB_DIALECT = process.env.DB_DIALECT; // 'postgres' para local, 'mariadb' para Docker
+const DB_PORT = process.env.DB_PORT;
+const DB_DIALECT = process.env.DB_DIALECT;
 
-// Inicializar Sequelize
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
-  port: DB_PORT, // Sequelize usará esto si está definido
+  port: DB_PORT,
   dialect: DB_DIALECT,
-  logging: false, // Desactiva el logging de las consultas SQL en consola (opcional, puedes poner 'true' para depuración)
+  logging: false, 
   dialectOptions: {
-    // Opciones específicas del dialecto. Por ejemplo, para PostgreSQL si usas SSL.
-    // Para MariaDB, esto podría estar vacío o tener opciones específicas si las necesitas.
+
   },
   pool: {
     max: 5,
@@ -27,15 +24,24 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   }
 });
 
-// Función para probar la conexión a la base de datos
-const connectDB = async () => {
+const MAX_RETRIES = 10;
+const RETRY_DELAY_MS = 5000; 
+
+const connectDB = async (retries = 0) => {
   try {
     await sequelize.authenticate();
     console.log(`🎉 Conexión a la base de datos (${DB_DIALECT}) establecida con éxito.`);
   } catch (error) {
-    console.error(`❌ No se pudo conectar a la base de datos (${DB_DIALECT}):`, error);
-    // En un entorno de producción, aquí podrías querer salir del proceso o intentar reconectar.
-    process.exit(1); // Sale del proceso si no se puede conectar a la DB
+    console.error(`❌ No se pudo conectar a la base de datos (${DB_DIALECT}):`, error.message); 
+    if (retries < MAX_RETRIES) {
+      const nextRetry = retries + 1;
+      console.log(`Intentando reconectar a la base de datos... Intento ${nextRetry}/${MAX_RETRIES} en ${RETRY_DELAY_MS / 1000} segundos.`);
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+      return connectDB(nextRetry);
+    } else {
+      console.error('⚠️ Se agotaron los intentos de conexión a la base de datos. La aplicación no puede iniciar.');
+      process.exit(1); 
+    }
   }
 };
 
