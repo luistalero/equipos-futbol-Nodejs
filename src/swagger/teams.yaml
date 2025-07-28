@@ -1,4 +1,3 @@
-# src/swagger/teams.yaml
 tags:
   - name: Equipos
     description: Gestión de los equipos de fútbol.

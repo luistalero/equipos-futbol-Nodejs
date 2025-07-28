@@ -1,7 +1,5 @@
-// src/controllers/technicalDirector.controller.js
-const { TechnicalDirector, Team } = require('../models/associations'); // Importa los modelos necesarios
+const { TechnicalDirector, Team } = require('../models/associations');
 
-// Crear un nuevo Director Técnico
 const createTechnicalDirector = async (req, res) => {
   const { name, lastname, nationality, birth_date } = req.body;
   try {
@@ -16,14 +14,13 @@ const createTechnicalDirector = async (req, res) => {
   }
 };
 
-// Obtener todos los Directores Técnicos (opcionalmente con el equipo que dirigen)
 const getAllTechnicalDirectors = async (req, res) => {
   try {
     const technicalDirectors = await TechnicalDirector.findAll({
       include: [{
         model: Team,
-        as: 'coachedTeam', // Usa el alias definido en associations.js
-        attributes: ['id', 'name', 'city'] // Define qué atributos del equipo quieres incluir
+        as: 'coachedTeam',
+        attributes: ['id', 'name', 'city']
       }]
     });
     res.status(200).json(technicalDirectors);
@@ -33,14 +30,13 @@ const getAllTechnicalDirectors = async (req, res) => {
   }
 };
 
-// Obtener un Director Técnico por ID (opcionalmente con el equipo que dirige)
 const getTechnicalDirectorById = async (req, res) => {
   const { id } = req.params;
   try {
     const technicalDirector = await TechnicalDirector.findByPk(id, {
       include: [{
         model: Team,
-        as: 'coachedTeam', // Usa el alias definido en associations.js
+        as: 'coachedTeam',
         attributes: ['id', 'name', 'city']
       }]
     });
@@ -54,7 +50,6 @@ const getTechnicalDirectorById = async (req, res) => {
   }
 };
 
-// Actualizar un Director Técnico por ID
 const updateTechnicalDirector = async (req, res) => {
   const { id } = req.params;
   const { name, lastname, nationality, birth_date } = req.body;
@@ -80,7 +75,6 @@ const updateTechnicalDirector = async (req, res) => {
   }
 };
 
-// Eliminar un Director Técnico por ID
 const deleteTechnicalDirector = async (req, res) => {
   const { id } = req.params;
   try {

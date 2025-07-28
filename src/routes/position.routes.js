@@ -1,4 +1,3 @@
-// src/routes/position.routes.js
 const express = require('express');
 const router = express.Router();
 const positionController = require('../controllers/position.controller');

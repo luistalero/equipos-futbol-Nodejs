@@ -1,4 +1,3 @@
-// src/controllers/position.controller.js
 const { Position } = require('../models/associations');
 
 const createPosition = async (req, res) => {

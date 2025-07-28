@@ -1,8 +1,6 @@
-// futbol-node/src/controllers/upload.controller.js
 const xlsx = require('xlsx');
 const { Team, Player, Position, TechnicalDirector } = require('../models/associations'); 
 
-// Función auxiliar para leer y procesar datos comunes del Excel
 const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, relatedModels = {}) => {
   const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
   const sheetName = workbook.SheetNames[0]; 
@@ -13,7 +11,6 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
     throw new Error('El archivo Excel está vacío o no contiene datos.');
   }
 
-  // Mapear encabezados a minúsculas y sin espacios para una coincidencia flexible
   const headers = jsonData[0].map(h => String(h).toLowerCase().trim().replace(/ /g, '_'));
   const dataRows = jsonData.slice(1); 
 
@@ -25,8 +22,6 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
       const header = headers[i];
       const value = row[i];
 
-      // Mapeo general de encabezados a propiedades del modelo
-      // Se han añadido más variaciones comunes de nombres de columnas
       switch (header) {
         case 'nombre':
         case 'name':
@@ -80,7 +75,6 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
         case 'license':
           itemData.license = value;
           break;
-        // Campos para buscar IDs relacionados
         case 'nombre_equipo':
         case 'team_name':
           itemData.team_name = value; 
@@ -98,7 +92,6 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
           break;
       }
     }
-    // Añadir el objeto de datos si los campos identificadores están presentes
     const isValid = identifierFields.every(field => itemData[field] !== undefined && itemData[field] !== null && String(itemData[field]).trim() !== '');
     if (isValid) {
       itemsToCreateOrUpdate.push(itemData);
@@ -110,11 +103,9 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
   return { itemsToCreateOrUpdate, headers };
 };
 
-// Función auxiliar para insertar/actualizar en la base de datos
 const saveItemsToDatabase = async (items, identifierFields, Model, relatedModels) => {
   const results = [];
   for (const itemData of items) {
-    // Manejar relaciones (buscar IDs por nombre si es necesario)
     let teamId = null;
     if (itemData.team_name && relatedModels.Team) {
       const team = await relatedModels.Team.findOne({ where: { name: itemData.team_name } });
@@ -130,7 +121,6 @@ const saveItemsToDatabase = async (items, identifierFields, Model, relatedModels
     }
 
     let technicalDirectorId = null;
-    // Para el DT, se usan nombre y apellido para la búsqueda, no solo el nombre
     if (itemData.technical_director_name && relatedModels.TechnicalDirector && itemData.lastname) { 
       const td = await relatedModels.TechnicalDirector.findOne({ 
         where: { 
@@ -144,19 +134,15 @@ const saveItemsToDatabase = async (items, identifierFields, Model, relatedModels
         console.warn(`Advertencia: Para asociar un Director Técnico por nombre completo, se requiere el 'Apellido' en la fila del Excel. DT: '${itemData.technical_director_name}'`);
     }
 
-    // Preparar datos para la inserción/actualización en el modelo actual
-    const dataToSave = { ...itemData }; // Copia los datos mapeados
+    const dataToSave = { ...itemData };
     if (teamId !== null) dataToSave.team_id = teamId;
     if (positionId !== null) dataToSave.position_id = positionId;
     if (technicalDirectorId !== null) dataToSave.technical_director_id = technicalDirectorId;
 
-    // Eliminar campos de nombres de relaciones que no son parte del modelo
     delete dataToSave.team_name;
     delete dataToSave.position_name;
     delete dataToSave.technical_director_name;
 
-
-    // Crear la condición de búsqueda para encontrar el item existente
     const findCondition = {};
     identifierFields.forEach(field => {
       if (dataToSave[field]) {
@@ -177,10 +163,6 @@ const saveItemsToDatabase = async (items, identifierFields, Model, relatedModels
   return results;
 };
 
-// =========================================================================
-// Controladores de Carga por Entidad (desde Excel)
-// =========================================================================
-
 exports.uploadTeamsExcel = async (req, res) => {
   try {
     if (!req.file) {
@@ -189,8 +171,8 @@ exports.uploadTeamsExcel = async (req, res) => {
 
     const { itemsToCreateOrUpdate: teamsToCreateOrUpdate } = processExcelData(
       req.file.buffer,
-      ['Nombre', 'Ciudad', 'Logo_URL', 'Fecha_Fundacion'], // Encabezados esperados
-      ['name'], // Campos para identificar un equipo único
+      ['Nombre', 'Ciudad', 'Logo_URL', 'Fecha_Fundacion'],
+      ['name'],
       Team 
     );
 
@@ -218,8 +200,8 @@ exports.uploadPositionsExcel = async (req, res) => {
 
     const { itemsToCreateOrUpdate: positionsToCreateOrUpdate } = processExcelData(
       req.file.buffer,
-      ['Nombre'], // Encabezados esperados
-      ['name'], // Campos para identificar una posición única
+      ['Nombre'],
+      ['name'],
       Position
     );
 
@@ -281,8 +263,7 @@ exports.uploadPlayersExcel = async (req, res) => {
       Player
     );
 
-    // Para jugadores, necesitamos buscar IDs de equipo y posición
-    const relatedModels = { Team, Position, TechnicalDirector }; // Se añade TechnicalDirector para la asociación
+    const relatedModels = { Team, Position, TechnicalDirector };
     const results = await saveItemsToDatabase(playersToCreateOrUpdate, ['name', 'lastname'], Player, relatedModels);
 
     res.status(200).json({
@@ -299,31 +280,21 @@ exports.uploadPlayersExcel = async (req, res) => {
   }
 };
 
-// =========================================================================
-// NUEVO CONTROLADOR: Carga Genérica de Imágenes
-// =========================================================================
 exports.uploadImage = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No se ha subido ningún archivo de imagen.' });
     }
-
-    // `req.file.filename` es el nombre único del archivo generado por Multer
-    // `req.protocol` es 'http' o 'https'
-    // `req.get('host')` es 'localhost:3000' o tu dominio
-    
-    // Construye la URL pública para la imagen
     const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
 
     res.status(200).json({
       message: 'Imagen subida exitosamente.',
       imageUrl: imageUrl,
       fileName: req.file.filename,
-      filePath: req.file.path // Ruta local en el servidor (útil para depuración)
+      filePath: req.file.path
     });
 
   } catch (error) {
-    // Si Multer generó un error (ej. límite de tamaño, tipo de archivo no permitido)
     if (error instanceof multer.MulterError) {
         return res.status(400).json({ message: `Error de subida: ${error.message}` });
     }

@@ -1,5 +1,3 @@
-# src/swagger/auth.yaml
-# SOLO tags y paths
 tags:
   - name: Autenticación
     description: Endpoints para el registro e inicio de sesión de usuarios.

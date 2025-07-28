@@ -15,7 +15,7 @@ const Position = sequelize.define('Position', {
   }
 }, {
   tableName: 'positions',
-  timestamps: false // No necesitamos timestamps para un catálogo simple
+  timestamps: false 
 });
 
 module.exports = Position;

@@ -15,17 +15,16 @@ const Team = sequelize.define('Team', {
   },
   city: {
     type: DataTypes.STRING,
-    allowNull: true // Puede ser nulo si no se especifica
+    allowNull: true
   },
-  logo_url: { // URL o ruta a la imagen del logo del equipo
+  logo_url: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  foundation_date: { // <-- ¡NUEVA LÍNEA AÑADIDA!
-    type: DataTypes.DATEONLY, // Para almacenar solo la fecha (YYYY-MM-DD)
-    allowNull: true // Puede ser nulo si no se especifica
+  foundation_date: {
+    type: DataTypes.DATEONLY,
+    allowNull: true
   }
-  // technical_director_id se agregará como una asociación en associations.js
 }, {
   tableName: 'teams',
   timestamps: true

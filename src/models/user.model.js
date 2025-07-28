@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db'); // Importa la instancia de Sequelize
+const { sequelize } = require('../config/db');
 
 const User = sequelize.define('User', {
   id: {
@@ -17,14 +17,14 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  role: { // Para diferenciar roles como 'admin', 'user', etc.
+  role: {
     type: DataTypes.ENUM('admin', 'user'),
     defaultValue: 'user',
     allowNull: false
   }
 }, {
-  tableName: 'users', // Nombre de la tabla en la base de datos
-  timestamps: true // Agrega createdAt y updatedAt automáticamente
+  tableName: 'users',
+  timestamps: true
 });
 
 module.exports = User;

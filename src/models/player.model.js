@@ -17,19 +17,18 @@ const Player = sequelize.define('Player', {
     allowNull: false
   },
   birth_date: {
-    type: DataTypes.DATEONLY, // Solo la fecha, sin hora
+    type: DataTypes.DATEONLY,
     allowNull: true
   },
-  photo_url: { // URL o ruta a la imagen del jugador
+  photo_url: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  is_technical_director: { // Para identificar si es un jugador o el DT
+  is_technical_director: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
     allowNull: false
   }
-  // team_id y position_id se agregarán como asociaciones en associations.js
 }, {
   tableName: 'players',
   timestamps: true

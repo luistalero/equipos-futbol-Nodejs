@@ -1,5 +1,3 @@
-# src/swagger/positions.yaml
-# SOLO tags y paths
 tags:
   - name: Posiciones
     description: Gestión de las posiciones de los jugadores.

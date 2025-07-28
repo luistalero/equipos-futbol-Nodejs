@@ -1,11 +1,9 @@
-// src/utils/swagger.js
 const swaggerJsdoc = require('swagger-jsdoc');
 const path = require('path');
 
 const options = {
-  // La propiedad 'definition' contiene la información principal de OpenAPI.
   definition: {
-    openapi: '3.0.0', // Versión de OpenAPI
+    openapi: '3.0.0',
     info: {
       title: 'API Torneo de Fútbol',
       version: '1.0.0',
@@ -25,7 +23,6 @@ const options = {
         description: 'Servidor local (Docker)'
       }
     ],
-    // Componentes reutilizables: esquemas, respuestas, seguridad
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -36,7 +33,6 @@ const options = {
         }
       },
       schemas: {
-        // Definición del esquema para el modelo Position
         Position: {
           type: 'object',
           properties: {
@@ -53,8 +49,6 @@ const options = {
           },
           required: ['name']
         },
-        // Aquí añadirás otros schemas como Team, Player, User (si los necesitas para Swagger)
-        // User: { ... }
       },
       responses: {
         UnauthorizedError: {
@@ -91,15 +85,12 @@ const options = {
         }
       }
     },
-    // Seguridad global aplicada a todas las rutas por defecto
     security: [
       {
         bearerAuth: []
       }
     ]
   },
-  // 'apis' define dónde buscar las tags y paths (desde archivos YAML o JSDoc).
-  // Aquí apuntamos a los archivos YAML que contienen solo las rutas.
   apis: [
     path.resolve(__dirname, '../swagger/auth.yaml'),         
     path.resolve(__dirname, '../swagger/positions.yaml'),    

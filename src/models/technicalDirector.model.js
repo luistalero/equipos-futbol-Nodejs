@@ -1,4 +1,3 @@
-// src/models/technicalDirector.model.js
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
@@ -22,13 +21,12 @@ const TechnicalDirector = sequelize.define('TechnicalDirector', {
     allowNull: true
   },
   birth_date: {
-    type: DataTypes.DATEONLY, // Solo fecha (YYYY-MM-DD)
+    type: DataTypes.DATEONLY,
     allowNull: true
   },
-  // La asociación con Team se manejará en associations.js
 }, {
-  tableName: 'technical_directors', // Nombre de la tabla en la base de datos
-  timestamps: true // Habilita createdAt y updatedAt
+  tableName: 'technical_directors',
+  timestamps: true
 });
 
 module.exports = TechnicalDirector;

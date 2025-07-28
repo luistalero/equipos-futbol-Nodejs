@@ -1,7 +1,5 @@
-// src/controllers/team.controller.js
-const { Team } = require('../models/associations'); // Asegúrate de importar el modelo Team
+const { Team } = require('../models/associations');
 
-// Crear un nuevo equipo
 const createTeam = async (req, res) => {
   const { name, city, logo_url } = req.body;
   try {
@@ -20,7 +18,6 @@ const createTeam = async (req, res) => {
   }
 };
 
-// Obtener todos los equipos
 const getAllTeams = async (req, res) => {
   try {
     const teams = await Team.findAll();
@@ -31,7 +28,6 @@ const getAllTeams = async (req, res) => {
   }
 };
 
-// Obtener un equipo por ID
 const getTeamById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -46,7 +42,6 @@ const getTeamById = async (req, res) => {
   }
 };
 
-// Actualizar un equipo por ID
 const updateTeam = async (req, res) => {
   const { id } = req.params;
   const { name, city, logo_url } = req.body;
@@ -55,7 +50,6 @@ const updateTeam = async (req, res) => {
     if (!team) {
       return res.status(404).json({ message: 'Equipo no encontrado.' });
     }
-    // Opcional: verificar si el nuevo nombre ya existe en otro equipo
     if (name && name !== team.name) {
       const existingTeam = await Team.findOne({ where: { name } });
       if (existingTeam) {
@@ -63,7 +57,7 @@ const updateTeam = async (req, res) => {
       }
     }
 
-    team.name = name || team.name; // Actualiza solo si se proporciona un nuevo valor
+    team.name = name || team.name;
     team.city = city || team.city;
     team.logo_url = logo_url || team.logo_url;
     
@@ -78,7 +72,6 @@ const updateTeam = async (req, res) => {
   }
 };
 
-// Eliminar un equipo por ID
 const deleteTeam = async (req, res) => {
   const { id } = req.params;
   try {

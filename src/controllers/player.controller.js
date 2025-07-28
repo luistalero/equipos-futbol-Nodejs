@@ -1,12 +1,9 @@
-// src/controllers/player.controller.js
-const { Player, Team, Position } = require('../models/associations'); // Asegúrate de que Player, Team y Position estén importados
+const { Player, Team, Position } = require('../models/associations');
 
-// Crear un nuevo jugador
 exports.createPlayer = async (req, res) => {
     try {
         const { name, lastname, birth_date, nationality, team_id, position_id } = req.body;
 
-        // Validar que el equipo y la posición existan si se proporcionan
         if (team_id) {
             const team = await Team.findByPk(team_id);
             if (!team) {
@@ -36,7 +33,6 @@ exports.createPlayer = async (req, res) => {
     }
 };
 
-// Obtener todos los jugadores
 exports.getAllPlayers = async (req, res) => {
     try {
         const players = await Player.findAll({
@@ -52,7 +48,6 @@ exports.getAllPlayers = async (req, res) => {
     }
 };
 
-// Obtener un jugador por ID
 exports.getPlayerById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -74,7 +69,6 @@ exports.getPlayerById = async (req, res) => {
     }
 };
 
-// Actualizar un jugador por ID
 exports.updatePlayer = async (req, res) => {
     try {
         const { id } = req.params;
@@ -115,7 +109,6 @@ exports.updatePlayer = async (req, res) => {
     }
 };
 
-// Eliminar un jugador por ID
 exports.deletePlayer = async (req, res) => {
     try {
         const { id } = req.params;
