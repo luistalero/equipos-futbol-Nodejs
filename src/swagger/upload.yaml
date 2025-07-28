@@ -1,6 +1,6 @@
 tags:
   - name: Carga de Archivos
-    description: Endpoints para subir archivos (Ej. Excel) y procesar datos.
+    description: Endpoints para subir archivos (Ej. Excel e imágenes) y procesar datos.
 
 paths:
   /upload/teams-excel:
@@ -222,6 +222,57 @@ paths:
                         id: { type: integer }
         '400':
           description: Solicitud inválida o no se subió archivo.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Acceso denegado.
+        '500':
+          description: Error interno del servidor.
+
+  /upload/image: # NUEVO ENDPOINT PARA SUBIR IMÁGENES GENÉRICAS
+    post:
+      summary: "Subir archivo de imagen (Solo Admin)"
+      description: >
+        Permite a un administrador subir un archivo de imagen (logo de equipo, foto de jugador/DT).
+        Retorna la URL pública de la imagen guardada en el servidor.
+        El tamaño máximo permitido es 5MB y solo se aceptan formatos de imagen comunes.
+      tags:
+        - Carga de Archivos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image: # Este es el nombre del campo 'file' en el formulario HTML/Multipart
+                  type: string
+                  format: binary # Indica que es un archivo binario (la imagen)
+                  description: Archivo de imagen (.jpg, .png, etc.) para subir.
+              required:
+                - image
+      responses:
+        '200':
+          description: Imagen subida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Imagen subida exitosamente." }
+                  imageUrl: { type: string, example: "http://localhost:3000/uploads/image-1678912345678-987654321.png" }
+                  fileName: { type: string, example: "image-1678912345678-987654321.png" }
+                  filePath: { type: string, example: "public/uploads/image-1678912345678-987654321.png" }
+        '400':
+          description: Solicitud inválida, no se subió archivo o tipo/tamaño incorrecto.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "No se ha subido ningún archivo de imagen." }
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':

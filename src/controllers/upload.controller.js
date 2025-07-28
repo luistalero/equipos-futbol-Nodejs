@@ -13,7 +13,8 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
     throw new Error('El archivo Excel está vacío o no contiene datos.');
   }
 
-  const headers = jsonData[0].map(h => String(h).toLowerCase().trim());
+  // Mapear encabezados a minúsculas y sin espacios para una coincidencia flexible
+  const headers = jsonData[0].map(h => String(h).toLowerCase().trim().replace(/ /g, '_'));
   const dataRows = jsonData.slice(1); 
 
   const itemsToCreateOrUpdate = [];
@@ -25,12 +26,14 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
       const value = row[i];
 
       // Mapeo general de encabezados a propiedades del modelo
+      // Se han añadido más variaciones comunes de nombres de columnas
       switch (header) {
         case 'nombre':
         case 'name':
           itemData.name = value;
           break;
         case 'apellido':
+        case 'last_name':
         case 'lastname':
           itemData.lastname = value;
           break;
@@ -39,9 +42,11 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
           itemData.city = value;
           break;
         case 'logo_url':
+        case 'logourl':
           itemData.logo_url = value;
           break;
         case 'fecha_fundacion':
+        case 'foundation_date':
           if (typeof value === 'number') {
               const date = xlsx.utils.excelToJSDatetime(value);
               itemData.foundation_date = date ? date.toISOString().split('T')[0] : null;
@@ -52,6 +57,7 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
           }
           break;
         case 'fecha_nacimiento':
+        case 'birth_date':
           if (typeof value === 'number') {
             const date = xlsx.utils.excelToJSDatetime(value);
             itemData.birth_date = date ? date.toISOString().split('T')[0] : null;
@@ -63,13 +69,15 @@ const processExcelData = (fileBuffer, expectedHeaders, identifierFields, Model, 
           break;
         case 'url_foto':
         case 'photo_url':
+        case 'photourl':
           itemData.photo_url = value;
           break;
         case 'es_dt':
-        case 'is_technical_director': // Valor booleano para Player si es DT
+        case 'is_technical_director': 
           itemData.is_technical_director = (String(value).toLowerCase() === 'true' || value === 1);
           break;
-        case 'licencia': // Para TechnicalDirector
+        case 'licencia': 
+        case 'license':
           itemData.license = value;
           break;
         // Campos para buscar IDs relacionados
@@ -122,10 +130,18 @@ const saveItemsToDatabase = async (items, identifierFields, Model, relatedModels
     }
 
     let technicalDirectorId = null;
-    if (itemData.technical_director_name && relatedModels.TechnicalDirector) {
-      const td = await relatedModels.TechnicalDirector.findOne({ where: { name: itemData.technical_director_name, lastname: itemData.lastname } }); // Asumo nombre y apellido para DT
+    // Para el DT, se usan nombre y apellido para la búsqueda, no solo el nombre
+    if (itemData.technical_director_name && relatedModels.TechnicalDirector && itemData.lastname) { 
+      const td = await relatedModels.TechnicalDirector.findOne({ 
+        where: { 
+          name: itemData.technical_director_name, 
+          lastname: itemData.lastname 
+        } 
+      }); 
       if (td) technicalDirectorId = td.id;
-      else console.warn(`Director Técnico '${itemData.technical_director_name}' no encontrado para ${Model.name}: ${itemData.name || ''}`);
+      else console.warn(`Director Técnico '${itemData.technical_director_name} ${itemData.lastname}' no encontrado para ${Model.name}: ${itemData.name || ''}`);
+    } else if (itemData.technical_director_name && relatedModels.TechnicalDirector && !itemData.lastname) {
+        console.warn(`Advertencia: Para asociar un Director Técnico por nombre completo, se requiere el 'Apellido' en la fila del Excel. DT: '${itemData.technical_director_name}'`);
     }
 
     // Preparar datos para la inserción/actualización en el modelo actual
@@ -162,7 +178,7 @@ const saveItemsToDatabase = async (items, identifierFields, Model, relatedModels
 };
 
 // =========================================================================
-// Controladores de Carga por Entidad
+// Controladores de Carga por Entidad (desde Excel)
 // =========================================================================
 
 exports.uploadTeamsExcel = async (req, res) => {
@@ -266,7 +282,7 @@ exports.uploadPlayersExcel = async (req, res) => {
     );
 
     // Para jugadores, necesitamos buscar IDs de equipo y posición
-    const relatedModels = { Team, Position };
+    const relatedModels = { Team, Position, TechnicalDirector }; // Se añade TechnicalDirector para la asociación
     const results = await saveItemsToDatabase(playersToCreateOrUpdate, ['name', 'lastname'], Player, relatedModels);
 
     res.status(200).json({
@@ -278,6 +294,42 @@ exports.uploadPlayersExcel = async (req, res) => {
     console.error('Error al importar jugadores desde Excel:', error);
     res.status(500).json({
       message: 'Error al procesar el archivo Excel.',
+      error: error.message
+    });
+  }
+};
+
+// =========================================================================
+// NUEVO CONTROLADOR: Carga Genérica de Imágenes
+// =========================================================================
+exports.uploadImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No se ha subido ningún archivo de imagen.' });
+    }
+
+    // `req.file.filename` es el nombre único del archivo generado por Multer
+    // `req.protocol` es 'http' o 'https'
+    // `req.get('host')` es 'localhost:3000' o tu dominio
+    
+    // Construye la URL pública para la imagen
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
+    res.status(200).json({
+      message: 'Imagen subida exitosamente.',
+      imageUrl: imageUrl,
+      fileName: req.file.filename,
+      filePath: req.file.path // Ruta local en el servidor (útil para depuración)
+    });
+
+  } catch (error) {
+    // Si Multer generó un error (ej. límite de tamaño, tipo de archivo no permitido)
+    if (error instanceof multer.MulterError) {
+        return res.status(400).json({ message: `Error de subida: ${error.message}` });
+    }
+    console.error('Error al subir imagen:', error);
+    res.status(500).json({
+      message: 'Error interno del servidor al procesar la imagen.',
       error: error.message
     });
   }

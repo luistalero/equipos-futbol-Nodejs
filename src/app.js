@@ -1,4 +1,4 @@
-// src/app.js
+// futbol-node/src/server.js
 const express = require('express');
 const cors = require('cors'); // Para manejar las políticas de CORS
 const path = require('path'); // Para manejar rutas de archivos y directorios
@@ -28,10 +28,10 @@ const PORT = process.env.PORT || 3000; // Define el puerto, tomando de .env o 30
 
 // Configuración explícita de CORS para permitir solicitudes desde los orígenes de Swagger UI
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:1640', 'http://localhost:5173'], // Permite peticiones desde estos dominios
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos
-    credentials: true, // Permite el envío de credenciales (ej. cookies, headers de autorización)
-    optionsSuccessStatus: 204 // Para las solicitudes preflight OPTIONS
+    origin: ['http://localhost:3000', 'http://localhost:1640', 'http://localhost:5173'], // Permite peticiones desde estos dominios
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos
+    credentials: true, // Permite el envío de credenciales (ej. cookies, headers de autorización)
+    optionsSuccessStatus: 204 // Para las solicitudes preflight OPTIONS
 };
 app.use(cors(corsOptions)); // Aplica el middleware CORS con las opciones definidas
 
@@ -41,19 +41,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Configurar el directorio para servir archivos estáticos (ej. imágenes subidas)
-const uploadDir = process.env.UPLOAD_DIR || 'public/uploads'; // Directorio de subidas desde .env o por defecto
+const uploadDir = 'public/uploads'; // Directorio de subidas (relativo a la raíz del proyecto)
 // Sirve los archivos estáticos desde /uploads (ej. http://localhost:3000/uploads/imagen.jpg)
+// path.join(__dirname, '..', uploadDir) construye la ruta absoluta: futbol-node/public/uploads
 app.use('/uploads', express.static(path.join(__dirname, '..', uploadDir)));
 
 // --- Rutas de la API ---
 
 // Ruta de prueba básica para verificar que la API está funcionando
 app.get('/api', (req, res) => {
-    res.status(200).json({
-        message: '¡Bienvenido a la API del Torneo de Fútbol!',
-        environment: process.env.NODE_ENV || 'development',
-        database_dialect: process.env.DB_DIALECT
-    });
+    res.status(200).json({
+        message: '¡Bienvenido a la API del Torneo de Fútbol!',
+        environment: process.env.NODE_ENV || 'development',
+        database_dialect: process.env.DB_DIALECT
+    });
 });
 
 app.use('/api', uploadRoutes);
@@ -65,7 +66,7 @@ app.use('/api/positions', positionRoutes);
 app.use('/api/teams', teamRoutes);
 // Montar las rutas de directores técnicos bajo el prefijo /api/technical-directors
 app.use('/api/technical-directors', technicalDirectorRoutes);
-app.use('/api/players', playerRoutes); // <-- ¡NUEVA LÍNEA AÑADIDA!
+app.use('/api/players', playerRoutes); 
 
 // --- Configuración de la Documentación Swagger UI ---
 // Monta Swagger UI en la ruta /api-docs.
@@ -75,26 +76,26 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Función asíncrona para conectar a la DB y levantar el servidor
 const startServer = async () => {
-    try {
-        await connectDB(); // Intenta conectar a la base de datos
+    try {
+        await connectDB(); // Intenta conectar a la base de datos
 
-        // Sincroniza los modelos de Sequelize con la base de datos.
-        // { alter: true } intenta realizar cambios no destructivos en la DB para que coincida con los modelos.
-        await sequelize.sync({ alter: true });
-        console.log('🔄 Modelos de Sequelize sincronizados con la base de datos.');
+        // Sincroniza los modelos de Sequelize con la base de datos.
+        // { alter: true } intenta realizar cambios no destructivos en la DB para que coincida con los modelos.
+        await sequelize.sync({ alter: true });
+        console.log('🔄 Modelos de Sequelize sincronizados con la base de datos.');
 
-        // Inicia el servidor Express en el puerto definido
-        app.listen(PORT, () => {
-            console.log(`🚀 Servidor Express funcionando en http://localhost:${PORT}`);
-            console.log(`ℹ️ Accede a la API en http://localhost:${PORT}/api`);
-            console.log(`📖 Documentación Swagger disponible en http://localhost:${PORT}/api-docs`);
-        });
+        // Inicia el servidor Express en el puerto definido
+        app.listen(PORT, () => {
+            console.log(`🚀 Servidor Express funcionando en http://localhost:${PORT}`);
+            console.log(`ℹ️ Accede a la API en http://localhost:${PORT}/api`);
+            console.log(`📖 Documentación Swagger disponible en http://localhost:${PORT}/api-docs`);
+        });
 
-    } catch (error) {
-        // Si hay un error fatal al iniciar (ej. no se puede conectar a la DB), lo loguea y sale del proceso
-        console.error('Fatal error al iniciar la aplicación:', error);
-        process.exit(1);
-    }
+    } catch (error) {
+        // Si hay un error fatal al iniciar (ej. no se puede conectar a la DB), lo loguea y sale del proceso
+        console.error('Fatal error al iniciar la aplicación:', error);
+        process.exit(1);
+    }
 };
 
 // Llama a la función para iniciar el servidor
