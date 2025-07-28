@@ -5,8 +5,8 @@ const positionController = require('../controllers/position.controller');
 const { verifyToken, isAdmin } = require('../middlewares/auth.middleware');
 
 router.post('/', verifyToken, isAdmin, positionController.createPosition);
-router.get('/', positionController.getAllPositions);
-router.get('/:id', positionController.getPositionById);
+router.get('/', verifyToken, positionController.getAllPositions);
+router.get('/:id', verifyToken, positionController.getPositionById);
 router.put('/:id', verifyToken, isAdmin, positionController.updatePosition);
 router.delete('/:id', verifyToken, isAdmin, positionController.deletePosition);
 

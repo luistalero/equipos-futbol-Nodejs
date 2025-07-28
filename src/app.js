@@ -17,7 +17,8 @@ const authRoutes = require('./routes/auth.routes');
 const positionRoutes = require('./routes/position.routes');
 const teamRoutes = require('./routes/team.routes');
 const technicalDirectorRoutes = require('./routes/technicalDirector.routes');
-const playerRoutes = require('./routes/player.routes'); // <-- ¡NUEVA LÍNEA AÑADIDA!
+const playerRoutes = require('./routes/player.routes'); 
+const uploadRoutes = require('./routes/upload.routes');
 
 // Inicializar la aplicación Express
 const app = express();
@@ -27,7 +28,7 @@ const PORT = process.env.PORT || 3000; // Define el puerto, tomando de .env o 30
 
 // Configuración explícita de CORS para permitir solicitudes desde los orígenes de Swagger UI
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:1640'], // Permite peticiones desde estos dominios
+    origin: ['http://localhost:3000', 'http://localhost:1640', 'http://localhost:5173'], // Permite peticiones desde estos dominios
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos
     credentials: true, // Permite el envío de credenciales (ej. cookies, headers de autorización)
     optionsSuccessStatus: 204 // Para las solicitudes preflight OPTIONS
@@ -55,6 +56,7 @@ app.get('/api', (req, res) => {
     });
 });
 
+app.use('/api', uploadRoutes);
 // Montar las rutas de autenticación bajo el prefijo /api/auth
 app.use('/api/auth', authRoutes);
 // Montar las rutas de posiciones bajo el prefijo /api/positions

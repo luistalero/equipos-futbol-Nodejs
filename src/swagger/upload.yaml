@@ -1,0 +1,230 @@
+tags:
+  - name: Carga de Archivos
+    description: Endpoints para subir archivos (Ej. Excel) y procesar datos.
+
+paths:
+  /upload/teams-excel:
+    post:
+      summary: "Cargar equipos desde un archivo Excel (Solo Admin)"
+      description: >
+        Permite a un administrador subir un archivo Excel para crear o actualizar equipos en la base de datos.
+        Los encabezados esperados en el Excel son: 'Nombre', 'Ciudad', 'Logo_URL', 'Fecha_Fundacion'.
+        Las fechas deben estar en formato 'YYYY-MM-DD' o como número de fecha de Excel.
+      tags:
+        - Carga de Archivos
+      security:
+        - bearerAuth: [] 
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary 
+                  description: Archivo Excel (.xlsx) con los datos de los equipos.
+              required:
+                - file
+      responses:
+        '200':
+          description: Equipos importados exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Datos de equipos importados exitosamente desde Excel." }
+                  summary:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name: { type: string }
+                        status: { type: string, example: "creado" }
+                        id: { type: integer }
+        '400':
+          description: Solicitud inválida o no se subió archivo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "No se ha subido ningún archivo." }
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          description: Acceso denegado. Se requiere rol de administrador o token no proporcionado.
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Error al procesar el archivo Excel." }
+                  error: { type: string }
+
+  /upload/positions-excel:
+    post:
+      summary: "Cargar posiciones desde un archivo Excel (Solo Admin)"
+      description: >
+        Permite a un administrador subir un archivo Excel para crear o actualizar posiciones en la base de datos.
+        El encabezado esperado en el Excel es: 'Nombre'.
+      tags:
+        - Carga de Archivos
+      security:
+        - bearerAuth: [] 
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary 
+                  description: Archivo Excel (.xlsx) con los datos de las posiciones.
+              required:
+                - file
+      responses:
+        '200':
+          description: Posiciones importadas exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Datos de posiciones importados exitosamente desde Excel." }
+                  summary:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name: { type: string }
+                        status: { type: string, example: "creada" }
+                        id: { type: integer }
+        '400':
+          description: Solicitud inválida o no se subió archivo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "No se ha subido ningún archivo." }
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          description: Acceso denegado. Se requiere rol de administrador o token no proporcionado.
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Error al procesar el archivo Excel." }
+                  error: { type: string }
+
+  /upload/technical-directors-excel:
+    post:
+      summary: "Cargar directores técnicos desde un archivo Excel (Solo Admin)"
+      description: >
+        Permite a un administrador subir un archivo Excel para crear o actualizar directores técnicos en la base de datos.
+        Los encabezados esperados en el Excel son: 'Nombre', 'Apellido', 'Fecha_Nacimiento', 'URL_Foto', 'Licencia'.
+      tags:
+        - Carga de Archivos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Archivo Excel (.xlsx) con los datos de los directores técnicos.
+              required:
+                - file
+      responses:
+        '200':
+          description: Directores técnicos importados exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Datos de directores técnicos importados exitosamente desde Excel." }
+                  summary:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name: { type: string }
+                        lastname: { type: string }
+                        status: { type: string, example: "creado" }
+                        id: { type: integer }
+        '400':
+          description: Solicitud inválida o no se subió archivo.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Acceso denegado.
+        '500':
+          description: Error interno del servidor.
+
+  /upload/players-excel:
+    post:
+      summary: "Cargar jugadores desde un archivo Excel (Solo Admin)"
+      description: >
+        Permite a un administrador subir un archivo Excel para crear o actualizar jugadores en la base de datos.
+        Los encabezados esperados en el Excel son: 'Nombre', 'Apellido', 'Fecha_Nacimiento', 'URL_Foto', 'Es_DT', 'Nombre_Equipo', 'Nombre_Posicion'.
+        'Es_DT' debe ser 'TRUE' o 'FALSE' (o 1/0). 'Nombre_Equipo' y 'Nombre_Posicion' se usarán para buscar los IDs correspondientes.
+      tags:
+        - Carga de Archivos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Archivo Excel (.xlsx) con los datos de los jugadores.
+              required:
+                - file
+      responses:
+        '200':
+          description: Jugadores importados exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, example: "Datos de jugadores importados exitosamente desde Excel." }
+                  summary:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name: { type: string }
+                        lastname: { type: string }
+                        status: { type: string, example: "creado" }
+                        id: { type: integer }
+        '400':
+          description: Solicitud inválida o no se subió archivo.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Acceso denegado.
+        '500':
+          description: Error interno del servidor.

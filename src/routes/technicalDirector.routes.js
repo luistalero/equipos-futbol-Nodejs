@@ -9,10 +9,10 @@ const { verifyToken, isAdmin } = require('../middlewares/auth.middleware'); // I
 router.post('/', verifyToken, isAdmin, technicalDirectorController.createTechnicalDirector);
 
 // GET /api/technical-directors - Obtener todos los DTs (Público)
-router.get('/', technicalDirectorController.getAllTechnicalDirectors);
+router.get('/', verifyToken, technicalDirectorController.getAllTechnicalDirectors);
 
 // GET /api/technical-directors/:id - Obtener un DT por ID (Público)
-router.get('/:id', technicalDirectorController.getTechnicalDirectorById);
+router.get('/:id', verifyToken, technicalDirectorController.getTechnicalDirectorById);
 
 // PUT /api/technical-directors/:id - Actualizar un DT por ID (Solo admin)
 router.put('/:id', verifyToken, isAdmin, technicalDirectorController.updateTechnicalDirector);

@@ -101,11 +101,12 @@ const options = {
   // 'apis' define dónde buscar las tags y paths (desde archivos YAML o JSDoc).
   // Aquí apuntamos a los archivos YAML que contienen solo las rutas.
   apis: [
-    path.resolve(__dirname, '../swagger/auth.yaml'),         // Rutas de autenticación
-    path.resolve(__dirname, '../swagger/positions.yaml'),    // Rutas de posiciones
-    path.resolve(__dirname, '../swagger/teams.yaml'),        // Rutas de equipos
-    path.resolve(__dirname, '../swagger/technicalDirectors.yaml'), // Rutas de directores técnicos
-    path.resolve(__dirname, '../swagger/players.yaml'),      // <-- ¡NUEVA LÍNEA AÑADIDA! Rutas de jugadores
+    path.resolve(__dirname, '../swagger/auth.yaml'),         
+    path.resolve(__dirname, '../swagger/positions.yaml'),    
+    path.resolve(__dirname, '../swagger/teams.yaml'),      
+    path.resolve(__dirname, '../swagger/technicalDirectors.yaml'), 
+    path.resolve(__dirname, '../swagger/players.yaml'),
+    path.resolve(__dirname, '../swagger/upload.yaml'),
   ],
 };
 
