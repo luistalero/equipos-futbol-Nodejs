@@ -26,15 +26,15 @@ Player.belongsTo(Position, {
   as: 'position'
 });
 
-Team.belongsTo(TechnicalDirector, {
-  foreignKey: 'technical_director_id',
+Team.hasOne(TechnicalDirector, {
+  foreignKey: 'team_id',
   as: 'technicalDirector', 
   onDelete: 'SET NULL'
 });
 
-TechnicalDirector.hasOne(Team, {
-  foreignKey: 'technical_director_id', 
-  as: 'coachedTeam'
+TechnicalDirector.belongsTo(Team, {
+  foreignKey: 'team_id',
+  as: 'team'
 });
 
 module.exports = {

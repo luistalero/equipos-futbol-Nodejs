@@ -20,6 +20,10 @@ const Player = sequelize.define('Player', {
     type: DataTypes.DATEONLY,
     allowNull: true
   },
+  nationality: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   photo_url: {
     type: DataTypes.STRING,
     allowNull: true

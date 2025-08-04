@@ -19,7 +19,7 @@ const getAllTechnicalDirectors = async (req, res) => {
     const technicalDirectors = await TechnicalDirector.findAll({
       include: [{
         model: Team,
-        as: 'coachedTeam',
+        as: 'team',
         attributes: ['id', 'name', 'city']
       }]
     });
@@ -36,7 +36,7 @@ const getTechnicalDirectorById = async (req, res) => {
     const technicalDirector = await TechnicalDirector.findByPk(id, {
       include: [{
         model: Team,
-        as: 'coachedTeam',
+        as: 'team',
         attributes: ['id', 'name', 'city']
       }]
     });

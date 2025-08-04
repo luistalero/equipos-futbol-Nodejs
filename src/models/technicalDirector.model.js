@@ -28,6 +28,10 @@ const TechnicalDirector = sequelize.define('TechnicalDirector', {
     type: DataTypes.DATEONLY,
     allowNull: true
   },
+  team_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true, 
+  }
 }, {
   tableName: 'technical_directors',
   timestamps: true
