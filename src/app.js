@@ -30,7 +30,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const uploadDir = 'public/uploads';
-app.use('/uploads', express.static(path.join(__dirname, '..', uploadDir)));
+const staticPath = path.join(__dirname, '..', uploadDir)
+app.use('/uploads', express.static(staticPath));
 
 app.get('/api', (req, res) => {
     res.status(200).json({
@@ -40,7 +41,7 @@ app.get('/api', (req, res) => {
     });
 });
 
-app.use('/api', uploadRoutes);
+app.use('/api/upload', uploadRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/positions', positionRoutes);
 app.use('/api/teams', teamRoutes);
@@ -56,6 +57,7 @@ const startServer = async () => {
         console.log('🔄 Modelos de Sequelize sincronizados con la base de datos.');
 
         app.listen(PORT, () => {
+            console.log('🔗 Sirviendo archivos estáticos desde:', staticPath);
             console.log(`🚀 Servidor Express funcionando en http://localhost:${PORT}`);
             console.log(`ℹ️ Accede a la API en http://localhost:${PORT}/api`);
             console.log(`📖 Documentación Swagger disponible en http://localhost:${PORT}/api-docs`);

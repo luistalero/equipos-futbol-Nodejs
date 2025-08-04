@@ -24,10 +24,13 @@ const Player = sequelize.define('Player', {
     type: DataTypes.STRING,
     allowNull: true
   },
-  is_technical_director: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    allowNull: false
+  team_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true, 
+  },
+  position_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   }
 }, {
   tableName: 'players',

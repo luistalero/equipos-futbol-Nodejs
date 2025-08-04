@@ -31,31 +31,31 @@ const uploadImage = multer({
 });
 
 router.post(
-  '/upload/teams-excel',
+  '/teams-excel',
   [verifyToken, isAdmin, uploadExcel.single('file')],
   uploadController.uploadTeamsExcel
 );
 
 router.post(
-  '/upload/positions-excel',
+  '/positions-excel',
   [verifyToken, isAdmin, uploadExcel.single('file')],
   uploadController.uploadPositionsExcel
 );
 
 router.post(
-  '/upload/technical-directors-excel',
+  '/technical-directors-excel',
   [verifyToken, isAdmin, uploadExcel.single('file')],
   uploadController.uploadTechnicalDirectorsExcel
 );
 
 router.post(
-  '/upload/players-excel',
+  '/players-excel',
   [verifyToken, isAdmin, uploadExcel.single('file')],
   uploadController.uploadPlayersExcel
 );
 
 router.post(
-  '/upload/image',
+  '/image',
   [verifyToken, isAdmin, uploadImage.single('image')],
   uploadController.uploadImage
 );
