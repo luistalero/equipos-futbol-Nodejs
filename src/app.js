@@ -15,6 +15,7 @@ const teamRoutes = require('./routes/team.routes');
 const technicalDirectorRoutes = require('./routes/technicalDirector.routes');
 const playerRoutes = require('./routes/player.routes'); 
 const uploadRoutes = require('./routes/upload.routes');
+const userRoutes = require('./routes/user.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000; 
@@ -47,6 +48,7 @@ app.use('/api/positions', positionRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/technical-directors', technicalDirectorRoutes);
 app.use('/api/players', playerRoutes); 
+app.use('/api/users', userRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

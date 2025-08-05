@@ -17,7 +17,7 @@ const TechnicalDirector = sequelize.define('TechnicalDirector', {
     allowNull: false
   },
   photo_url: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true
   },
   nationality: {

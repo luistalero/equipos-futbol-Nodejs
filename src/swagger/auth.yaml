@@ -1,6 +1,6 @@
 tags:
   - name: Autenticación
-    description: Endpoints para el registro e inicio de sesión de usuarios.
+    description: Endpoints para el registro, inicio de sesión y recuperación de contraseña.
 
 paths:
   /auth/register:
@@ -111,6 +111,84 @@ paths:
                     example: user
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        500:
+          description: Error interno del servidor.
+
+  /auth/forgot-password:
+    post:
+      summary: Envía un enlace de recuperación de contraseña al correo electrónico del usuario.
+      tags: [Autenticación]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: El correo electrónico del usuario.
+                  example: usuario@ejemplo.com
+      responses:
+        200:
+          description: Mensaje de éxito genérico para evitar dar pistas si el correo existe o no.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Si el correo electrónico existe, se ha enviado un enlace para restablecer la contraseña.
+        500:
+          description: Error interno del servidor.
+  
+  /auth/reset-password:
+    post:
+      summary: Restablece la contraseña del usuario utilizando un token de recuperación.
+      tags: [Autenticación]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                  description: El token de recuperación recibido por correo.
+                  example: c9e0d1b4a3c5e7f2a1b9d0c3e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9
+                newPassword:
+                  type: string
+                  description: La nueva contraseña para el usuario.
+                  example: NuevaPassword123
+      responses:
+        200:
+          description: La contraseña se ha restablecido exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Contraseña actualizada correctamente.
+        400:
+          description: Token de recuperación inválido o expirado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: El token es inválido o ha expirado.
         500:
           description: Error interno del servidor.
 

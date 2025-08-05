@@ -98,6 +98,7 @@ const options = {
     path.resolve(__dirname, '../swagger/technicalDirectors.yaml'), 
     path.resolve(__dirname, '../swagger/players.yaml'),
     path.resolve(__dirname, '../swagger/upload.yaml'),
+    path.resolve(__dirname, '../swagger/users.yaml'),
   ],
 };
 

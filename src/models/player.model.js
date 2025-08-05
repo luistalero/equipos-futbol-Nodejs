@@ -25,7 +25,7 @@ const Player = sequelize.define('Player', {
     allowNull: true
   },
   photo_url: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true
   },
   team_id: {

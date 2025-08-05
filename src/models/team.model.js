@@ -18,7 +18,7 @@ const Team = sequelize.define('Team', {
     allowNull: true
   },
   logo_url: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true
   },
   foundation_date: {

@@ -7,6 +7,10 @@ router.post('/register', authController.register);
 
 router.post('/login', authController.login);
 
+router.post('/forgot-password', authController.forgotPassword);
+
+router.post('/reset-password', authController.resetPassword); 
+
 router.get('/profile', verifyToken, (req, res) => {
   res.status(200).json({
     message: 'Acceso autorizado al perfil.',
