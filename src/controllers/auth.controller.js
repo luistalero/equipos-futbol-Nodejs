@@ -107,7 +107,7 @@ const forgotPassword = async (req, res) => {
       },
     });
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`; // URL del frontend
+    const resetUrl = `http://localhost:5174/reset-password/${resetToken}`; // URL del frontend
 
     const mailOptions = {
       to: user.email,
