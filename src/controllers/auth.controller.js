@@ -56,7 +56,7 @@ const register = async (req, res) => {
     if (n8n_webhook_url) {
       axios.post(n8n_webhook_url, userToSend)
         .then(response => {
-          console.log('✅ Webhook de nuevo usuario enviado a n8n con éxito. Estado:', response.status);
+          console.log('✅ Webhook de nuevo usuario enviado a n8n con éxito. Estado:', response.status, 'url:', n8n_webhook_url);
         })
         .catch(error => {
           console.error('❌ Error al enviar webhook a n8n:', error.message);
