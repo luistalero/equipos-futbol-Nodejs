@@ -21,6 +21,10 @@ const options = {
       {
         url: 'http://localhost:1640/api',
         description: 'Servidor local (Docker)'
+      },
+      {
+        url: 'https://equipos-futbol-nodejs-production.up.railway.app/api',
+        description: 'Servidor Producción (Railway)'
       }
     ],
     components: {
