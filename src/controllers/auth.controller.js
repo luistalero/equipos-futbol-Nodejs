@@ -4,6 +4,14 @@ const { User } = require('../models/associations');
 const jwtConfig = require('../config/jwt'); 
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const axios = require('axios');
+
+const n8n_production_webhook_url = process.env.N8N_WEBHOOK_URL;
+const n8n_test_webhook_url = process.env.N8N_TEST_WEBHOOK_URL;
+
+const n8n_webhook_url = process.env.NODE_ENV === 'production'
+  ? n8n_production_webhook_url
+  : n8n_test_webhook_url || n8n_production_webhook_url;
 
 const register = async (req, res) => {
   const { name, lastname, username, email, password, role } = req.body;
@@ -34,6 +42,28 @@ const register = async (req, res) => {
       jwtConfig.secret,
       { expiresIn: jwtConfig.expiresIn }
     );
+
+    const userToSend = {
+      id: newUser.id,
+      name: newUser.name,
+      lastname: newUser.lastname,
+      username: newUser.username,
+      email: newUser.email,
+      role: newUser.role,
+      createdAt: newUser.createdAt
+    };
+
+    if (n8n_webhook_url) {
+      axios.post(n8n_webhook_url, userToSend)
+        .then(response => {
+          console.log('✅ Webhook de nuevo usuario enviado a n8n con éxito. Estado:', response.status);
+        })
+        .catch(error => {
+          console.error('❌ Error al enviar webhook a n8n:', error.message);
+        });
+    } else {
+      console.log('⚠️ No se encontró la URL del webhook de n8n en el archivo .env. Webhook no enviado.');
+    }
 
     res.status(201).json({
       message: 'Usuario registrado exitosamente.',
