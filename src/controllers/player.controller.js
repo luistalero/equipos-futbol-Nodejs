@@ -1,4 +1,12 @@
 const { Player, Team, Position } = require('../models/associations');
+const axios = require('axios');
+
+const n8n_production_webhook_url = process.env.N8N_WEBHOOK_URL;
+const n8n_test_webhook_url = process.env.N8N_TEST_WEBHOOK_URL;
+
+const n8n_webhook_url = process.env.NODE_ENV === 'production'
+  ? n8n_production_webhook_url
+  : n8n_test_webhook_url || n8n_production_webhook_url;
 
 exports.createPlayer = async (req, res) => {
     try {
@@ -25,6 +33,19 @@ exports.createPlayer = async (req, res) => {
             team_id,
             position_id
         });
+    
+        const playerToSend = player.toJSON();
+        if (n8n_webhook_url) {
+            axios.post(n8n_webhook_url, playerToSend)
+                .then(response => {
+                    console.log('✅ Webhook enviado a n8n con éxito. Estado:', response.status);
+                })
+                .catch(error => {
+                    console.error('❌ Error al enviar webhook a n8n:', error.message);
+                });
+        } else {
+            console.log('⚠️ No se encontró la URL del webhook de n8n en el archivo .env. Webhook no enviado.');
+        }
 
         res.status(201).json({ message: 'Jugador creado exitosamente.', player });
     } catch (error) {

@@ -52,6 +52,13 @@ app.use('/api/users', userRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.post('/webhook/n8n', (req, res) => {
+    const data = req.body;
+    console.log('Datos recibidos del webhook:', data);
+    res.status(200).send('Webhook recibido con éxito.');
+  });
+  
+
 const startServer = async () => {
     try {
         await connectDB();
