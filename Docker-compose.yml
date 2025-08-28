@@ -1,39 +1,53 @@
-version: '3.8' # Versión de la sintaxis de Docker Compose
+version: '3.8'
 
 services:
   # Servicio de la aplicación Node.js
   app:
-    build: . # Construye la imagen de la aplicación desde el Dockerfile en el directorio actual
+    build: .
     ports:
-      - "1640:3000" # Mapea el puerto 1640 del host al puerto 3000 del contenedor
-    environment: # Variables de entorno que se inyectarán en el contenedor de la aplicación
-      NODE_ENV: production # Indicamos que es un entorno de producción para el contenedor
-      DB_HOST: mariadb       # <--- ¡Importante! Nombre del servicio de MariaDB dentro de la red Docker
-      DB_USER: ${DB_USER}    # Estas variables son las que usará la app dentro del contenedor
+      # Mantén esto para tu desarrollo local, pero en Railway no es necesario.
+      # Railway te asignará un puerto dinámico.
+      - "1640:3000"
+    environment:
+      NODE_ENV: production
+      # Railway inyectará estas variables automáticamente desde la configuración de tu proyecto.
+      # No necesitas un valor fijo aquí, Railway se encargará de esto.
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      DB_DIALECT: mysql    # <--- Especifica el dialecto para el entorno Docker
+      DB_DIALECT: mysql
       JWT_SECRET: ${JWT_SECRET}
       UPLOAD_DIR: ${UPLOAD_DIR}
-    depends_on: # Indica que este servicio depende de la base de datos para iniciar
-      - mariadb
+    # --- DEBES ELIMINAR ESTO EN RAILWAY ---
+    # Elimina esta dependencia. La base de datos de Railway no es un servicio local.
+    # depends_on:
+    #   - mariadb
+    # ------------------------------------
     volumes:
-      # Monta el volumen para la persistencia de las imágenes subidas
-      # La ruta interna debe coincidir con donde tu app guarda los archivos
+      # Mantén este volumen si planeas almacenar archivos de forma persistente.
+      # Railway ofrece volúmenes persistentes, pero la ruta podría variar.
+      # Es recomendable manejar la persistencia de archivos de otra manera en la nube.
       - ./public/uploads:/src/src/app/public/uploads
 
-  # Servicio de la base de datos MariaDB
-  mariadb:
-    image: mariadb:10.6 # Usa la imagen oficial de MariaDB versión 10.6
-    environment: # Variables de entorno para configurar MariaDB
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD} # Contraseña para el usuario root de MariaDB
-      MARIADB_DATABASE: ${DB_NAME}               # Nombre de la base de datos a crear
-      MARIADB_USER: ${DB_USER}                   # Usuario de la base de datos
-      MARIADB_PASSWORD: ${DB_PASSWORD}           # Contraseña del usuario
-    volumes:
-      - db_data:/var/lib/mysql # Monta un volumen para la persistencia de los datos de la base de datos
-    ports:
-      - "3307:3306" # Expone el puerto de MariaDB (para conectarte con un cliente externo si lo necesitas)
+  # --- DEBES ELIMINAR ESTO EN RAILWAY ---
+  # Elimina todo este servicio. Railway ya provee un servicio de base de datos MySQL.
+  # No necesitas levantar tu propia base de datos dentro del mismo proyecto.
+  # mariadb:
+  #   image: mariadb:10.6
+  #   environment:
+  #     MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+  #     MARIADB_DATABASE: ${DB_NAME}
+  #     MARIADB_USER: ${DB_USER}
+  #     MARIADB_PASSWORD: ${DB_PASSWORD}
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #   ports:
+  #     - "3307:3306"
+  # ------------------------------------
 
-volumes:
-  db_data: # Define el volumen con nombre para la persistencia de datos de MariaDB
+# --- DEBES ELIMINAR ESTO EN RAILWAY ---
+# Este volumen es solo para tu entorno local.
+# volumes:
+#   db_data:
+# ------------------------------------
