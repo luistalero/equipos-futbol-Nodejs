@@ -16,12 +16,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-      userId: {
-        type: Sequelize.INTEGER,
+      userEmail: {
+        type: Sequelize.STRING,
         allowNull: false,
         references: {
           model: 'users',
-          key: 'id'
+          key: 'email'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
