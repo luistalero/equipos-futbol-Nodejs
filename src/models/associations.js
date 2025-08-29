@@ -53,13 +53,13 @@ LoginLog.belongsTo(User, {
 });
 
 User.hasMany(ChatMessage, {
-  foreignKey: 'userId',
+  foreignKey: 'userEmail',
   as: 'chatMessages',
   onDelete: 'CASCADE'
 });
 
 ChatMessage.belongsTo(User, {
-  foreignKey: 'userId',
+  foreignKey: 'userEmail',
   as: 'user'
 });
 
