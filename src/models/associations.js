@@ -3,6 +3,7 @@ const Position = require('./position.model');
 const Team = require('./team.model');
 const Player = require('./player.model');
 const TechnicalDirector = require('./technicalDirector.model'); 
+const LoginLog = require('./LoginLog.model');
 
 Team.hasMany(Player, {
   foreignKey: 'team_id',
@@ -37,10 +38,22 @@ TechnicalDirector.belongsTo(Team, {
   as: 'team'
 });
 
+User.hasMany(LoginLog, {
+  foreignKey: 'userId',
+  as: 'loginLogs',
+  onDelete: 'CASCADE'
+});
+
+LoginLog.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
 module.exports = {
   User,
   Position,
   Team,
   Player,
-  TechnicalDirector
+  TechnicalDirector,
+  LoginLog
 };

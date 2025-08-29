@@ -2,11 +2,7 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    class LoginLog extends Model {
-        static associate(models) {
-            // No se necesita ninguna asociación si solo guardas el username.
-        }
-    }
+    class LoginLog extends Model {}
     LoginLog.init({
         id: {
             type: DataTypes.INTEGER,
