@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
             autoIncrement: true
         },
         payload: {
-            type: DataTypes.JSONB,
+            type: DataTypes.JSON,
             allowNull: false
         },
         status: {
