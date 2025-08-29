@@ -2,8 +2,8 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    class ChatMessage extends Model {}
-    ChatMessage.init({
+    class MessageChat extends Model {}
+    MessageChat.init({
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -25,10 +25,10 @@ module.exports = (sequelize) => {
         }
     }, {
         sequelize,
-        modelName: 'ChatMessage',
-        tableName: 'chat_messages',
+        modelName: 'MessageChat',
+        tableName: 'messages_chat',
         timestamps: true,
         underscored: true
     });
-    return ChatMessage;
+    return MessageChat;
 };
