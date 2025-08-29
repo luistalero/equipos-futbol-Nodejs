@@ -1,9 +1,11 @@
-const User = require('./user.model');
-const Position = require('./position.model');
-const Team = require('./team.model');
-const Player = require('./player.model');
-const TechnicalDirector = require('./technicalDirector.model'); 
-const LoginLog = require('./LoginLog.model');
+const { sequelize } = require('../config/database');
+
+const User = require('./user.model')(sequelize);
+const Position = require('./position.model')(sequelize);
+const Team = require('./team.model')(sequelize);
+const Player = require('./player.model')(sequelize);
+const TechnicalDirector = require('./technicalDirector.model')(sequelize); 
+const LoginLog = require('./LoginLog.model')(sequelize);
 
 Team.hasMany(Player, {
   foreignKey: 'team_id',
