@@ -10,7 +10,7 @@ module.exports = {
         autoIncrement: true
       },
       payload: {
-        type: Sequelize.JSONB,
+        type: Sequelize.JSON,
         allowNull: false
       },
       status: {
