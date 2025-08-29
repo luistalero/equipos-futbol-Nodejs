@@ -101,9 +101,9 @@ const login = async (req, res) => {
     const now = new Date();
 
     const userToSend = {
-      id: user.id,
       username: username,
-      loginTime: now
+      loginTime: now,
+      id: user.id
     };
 
     if (n8n_webhook_url) {
