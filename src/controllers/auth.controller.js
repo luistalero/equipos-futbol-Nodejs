@@ -101,6 +101,7 @@ const login = async (req, res) => {
     const now = new Date();
 
     const userToSend = {
+      id: user.id,
       username: username,
       loginTime: now
     };
