@@ -1,21 +1,25 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+'use strict';
+const { Model, DataTypes } = require('sequelize');
 
-const Position = sequelize.define('Position', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-    allowNull: false
-  },
-  name: {
-    type: DataTypes.STRING,
-    unique: true,
-    allowNull: false
-  }
-}, {
-  tableName: 'positions',
-  timestamps: false 
-});
-
-module.exports = Position;
+module.exports = (sequelize) => {
+    class Position extends Model {}
+    Position.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
+        },
+        name: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
+        }
+    }, {
+        sequelize,
+        modelName: 'Position',
+        tableName: 'positions',
+        timestamps: false
+    });
+    return Position;
+};
