@@ -6,6 +6,7 @@ const Team = require('./team.model')(sequelize);
 const Player = require('./player.model')(sequelize);
 const TechnicalDirector = require('./technicalDirector.model')(sequelize); 
 const LoginLog = require('./LoginLog.model')(sequelize);
+const ChatMessage = require('./ChatMessage.model')(sequelize); 
 
 Team.hasMany(Player, {
   foreignKey: 'team_id',
@@ -51,11 +52,23 @@ LoginLog.belongsTo(User, {
   as: 'user'
 });
 
+User.hasMany(ChatMessage, {
+  foreignKey: 'userId',
+  as: 'chatMessages',
+  onDelete: 'CASCADE'
+});
+
+ChatMessage.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
 module.exports = {
   User,
   Position,
   Team,
   Player,
   TechnicalDirector,
-  LoginLog
+  LoginLog,
+  ChatMessage
 };
