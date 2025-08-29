@@ -102,7 +102,7 @@ const login = async (req, res) => {
 
     const userToSend = {
       username: username,
-      loginTime: now.toLocaleString(),
+      loginTime: now
     };
 
     if (n8n_webhook_url) {
