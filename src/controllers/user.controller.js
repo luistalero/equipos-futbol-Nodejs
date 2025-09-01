@@ -133,3 +133,28 @@ exports.getUserStatus = async (req, res) => {
       res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
+exports.getUserByEmail = async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+      return res.status(400).json({ message: 'El parámetro email es requerido.' });
+  }
+
+  try {
+      const user = await User.findOne({
+          where: { email },
+          attributes: ['id', 'strikes', 'is_suspended']
+      });
+
+      if (!user) {
+          return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      res.status(200).json(user);
+
+  } catch (error) {
+      console.error('Error al obtener usuario por email:', error);
+      res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+};

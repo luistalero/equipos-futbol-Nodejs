@@ -5,6 +5,7 @@ const { verifyToken } = require('../middlewares/auth.middleware');
 
 router.get('/', userController.getAllUsers);
 router.get('/:id', userController.getUserById);
+router.get('/by-email', userController.getUserByEmail);
 router.post('/', userController.createUser);
 router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
