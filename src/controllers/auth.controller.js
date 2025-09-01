@@ -213,10 +213,37 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const logoutUser = async (req, res) => {
+  const { userId } = req.body;
+  if (!userId) {
+    return res.status(400).json({ message: 'El ID de usuario es requerido.' });
+  }
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+
+    if (!user.is_suspended) {
+      console.log(`Usuario ID: ${userId} no está suspendido. No se realiza ninguna acción.`);
+      return res.status(200).json({ message: 'Usuario no suspendido. No se requiere acción.' });
+    }
+
+    console.log(`Señal de cierre de sesión por suspensión recibida para el usuario ID: ${userId}`);
+
+    res.status(200).json({ message: 'Señal de cierre de sesión recibida y procesada.' });
+
+  } catch (error) {
+    console.error('Error al procesar la señal de cierre de sesión:', error);
+    res.status(500).json({ message: 'Error interno del servidor al procesar la señal de cierre de sesión.' });
+  }
+};
 
 module.exports = {
   register,
   login,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  logoutUser
 };
