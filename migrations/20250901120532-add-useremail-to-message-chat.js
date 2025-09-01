@@ -1,6 +1,7 @@
 'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     await queryInterface.addColumn('messages_chat', 'userEmail', {
       type: Sequelize.STRING,
       allowNull: false,
@@ -9,11 +10,11 @@ module.exports = {
         key: 'email',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
+      onDelete: 'SET NULL',
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize)  {
     await queryInterface.removeColumn('messages_chat', 'userEmail');
   }
 };
