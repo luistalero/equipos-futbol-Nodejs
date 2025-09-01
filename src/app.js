@@ -62,7 +62,6 @@ app.post('/webhook/n8n', (req, res) => {
 const startServer = async () => {
     try {
         await connectDB();
-        await sequelize.sync({ alter: true });
         console.log('🔄 Modelos de Sequelize sincronizados con la base de datos.');
 
         app.listen(PORT, () => {
