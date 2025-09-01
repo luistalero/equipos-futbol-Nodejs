@@ -40,6 +40,16 @@ module.exports = (sequelize) => {
             type: DataTypes.ENUM('admin', 'user'),
             defaultValue: 'user',
             allowNull: false
+        },
+        strikes: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull: false
+        },
+        is_suspended: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         }
     }, {
         sequelize,

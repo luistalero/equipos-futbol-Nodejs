@@ -22,14 +22,16 @@ const verifyToken = (req, res, next) => {
       return res.status(401).json({ message: 'Fallo al autenticar el token.' });
     }
 
-    req.userId = decoded.id;
-    req.userRole = decoded.role;
+    req.user = {
+      id: decoded.id,
+      role: decoded.role
+      }
     next();
   });
 };
 
 const isAdmin = (req, res, next) => {
-  if (req.userRole === 'admin') {
+  if (req.user && req.user.role === 'admin') {
     next();
   } else {
     return res.status(403).json({ message: 'Acceso denegado. Se requiere rol de administrador.' });

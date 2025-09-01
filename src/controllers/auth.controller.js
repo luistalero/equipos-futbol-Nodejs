@@ -92,6 +92,10 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Credenciales inválidas.' });
     }
 
+    if (user.is_suspended) {
+      return res.status(403).json({ message: 'Tu cuenta ha sido suspendida. Por favor, revisa tu correo electrónico para más información.' });
+  }
+
     const token = jwt.sign(
       { id: user.id, role: user.role }, 
       jwtConfig.secret,             

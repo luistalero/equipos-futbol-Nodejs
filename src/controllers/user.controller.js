@@ -84,3 +84,52 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: 'Error al eliminar usuario', error });
   }
 };
+
+exports.updateUserStrikes = async (req, res) => {
+  const { userId, strikes, is_suspended } = req.body;
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    user.strikes = strikes;
+    user.is_suspended = is_suspended;
+    await user.save();
+
+    res.status(200).json({ 
+      message: 'Infracciones de usuario actualizadas exitosamente',
+      user: { id: user.id, strikes: user.strikes, is_suspended: user.is_suspended }
+    });
+
+  } catch (error) {
+      console.error('Error al actualizar las infracciones del usuario:', error);
+      res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+exports.getUserStatus = async (req, res) => {
+  const { id } = req.params;
+  const authUserId = req.user.id;
+
+  if (parseInt(id) !== authUserId) {
+    return res.status(403).json({ message: 'Acceso no autorizado' });
+  }
+
+  try {
+    const user = await User.findByPk(id, {
+      attributes: ['is_suspended']
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json({ is_suspended: user.is_suspended });
+
+  } catch (error) {
+      console.error('Error al obtener el estado del usuario:', error);
+      res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
