@@ -16,16 +16,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-      userEmail: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'email'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
