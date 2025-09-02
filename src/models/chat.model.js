@@ -26,8 +26,7 @@ module.exports = (sequelize) => {
         sequelize,
         modelName: 'Chat',
         tableName: 'chats',
-        timestamps: true,
-        underscored: true
+        timestamps: true
     });
     return Chat;
 };
