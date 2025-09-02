@@ -110,13 +110,14 @@ app.post('/api/auth/suspend', (req, res) => {
 });
 
 const API_URL = process.env.API_URL;
+const PORT = process.env.PORT;
 
 const startServer = async () => {
     try {
         await connectDB();
         console.log('🔄 Modelos de Sequelize sincronizados con la base de datos.');
 
-        server.listen(API_URL, () => {
+        server.listen(PORT, () => {
             console.log('🔗 Sirviendo archivos estáticos desde:', staticPath);
             console.log(`🚀 Servidor Express funcionando en ${API_URL}`);
             console.log(`ℹ️ Accede a la API en ${API_URL}/api`);
