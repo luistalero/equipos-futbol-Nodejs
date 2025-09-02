@@ -1,14 +1,15 @@
 const express = require('express');
 const axios = require('axios');
+// Importamos la función 'verifyToken' usando desestructuración.
+const { verifyToken } = require('../middlewares/auth.middleware');
 const { Chat } = require('../models/associations');
-const { isAuthenticated } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
 const N8N_WEBHOOK_URL = process.env.N8N_TEST_WEBHOOK_URL; 
 
 // Ruta para obtener el historial de chat de un usuario
-router.get('/:userId', isAuthenticated, async (req, res) => {
+router.get('/:userId', verifyToken, async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -23,7 +24,7 @@ router.get('/:userId', isAuthenticated, async (req, res) => {
   }
 });
 
-router.post('/send', isAuthenticated, async (req, res) => {
+router.post('/send', verifyToken, async (req, res) => {
   const { userId, message } = req.body;
 
   try {
