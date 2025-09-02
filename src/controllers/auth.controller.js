@@ -161,7 +161,7 @@ const forgotPassword = async (req, res) => {
       },
     });
 
-    const resetUrl = `http://localhost:5174/reset-password/${resetToken}`; // URL del frontend
+    const resetUrl = `https://equipos-futbol-reactjs-production.up.railway.app/reset-password/${resetToken}`;
 
     const mailOptions = {
       to: user.email,
