@@ -1,7 +1,7 @@
 const { Chat } = require('../models/associations');
 const axios = require('axios');
 
-const N8N_WEBHOOK_URL = process.env.N8N_TEST_WEBHOOK_URL;
+const N8N_WEBHOOK_URL = process.env.URL_N8N_PRODUCTION || process.env.URL_N8N_TEST_PRODUCTION;
 
 /**
  * Obtiene el historial de chat de un usuario específico.
