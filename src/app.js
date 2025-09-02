@@ -19,6 +19,7 @@ const technicalDirectorRoutes = require('./routes/technicalDirector.routes');
 const playerRoutes = require('./routes/player.routes'); 
 const uploadRoutes = require('./routes/upload.routes');
 const userRoutes = require('./routes/user.routes');
+const chatRoutes = require('./routes/chat.routes');
 
 const app = express();
 const server = http.createServer(app);
@@ -84,6 +85,7 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/technical-directors', technicalDirectorRoutes);
 app.use('/api/players', playerRoutes); 
 app.use('/api/users', userRoutes);
+app.use('/api/chats', chatRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

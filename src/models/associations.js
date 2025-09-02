@@ -1,5 +1,6 @@
 const { sequelize } = require('../config/db');
 
+const Chat = require('./chat.model')(sequelize);
 const User = require('./user.model')(sequelize);
 const Position = require('./position.model')(sequelize);
 const Team = require('./team.model')(sequelize);
@@ -63,6 +64,17 @@ MessageChat.belongsTo(User, {
   as: 'user'
 });
 
+User.hasMany(Chat, {
+  foreignKey: 'userId', 
+  as: 'chatHistory',
+  onDelete: 'CASCADE'
+});
+
+Chat.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
 module.exports = {
   User,
   Position,
@@ -70,5 +82,6 @@ module.exports = {
   Player,
   TechnicalDirector,
   LoginLog,
-  MessageChat
+  MessageChat,
+  Chat
 };
