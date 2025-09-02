@@ -8,6 +8,6 @@ const router = express.Router();
 router.get('/:userId', verifyToken, getChatHistory);
 
 // Ruta para enviar un mensaje y recibir una respuesta de n8n
-router.post('/send', verifyToken, sendMessage);
+router.post('/send', sendMessage);
 
 module.exports = router;
