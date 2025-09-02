@@ -29,8 +29,7 @@ const getChatHistory = async (req, res) => {
 };
 
 /**
- * Procesa un mensaje de usuario, lo guarda en la DB, lo envía a n8n
- * y guarda la respuesta de n8n.
+ * Procesa un mensaje de usuario, lo guarda en la DB y lo envía a n8n.
  * @param {Object} req - Objeto de solicitud de Express.
  * @param {Object} res - Objeto de respuesta de Express.
  */
@@ -46,34 +45,47 @@ const sendMessage = async (req, res) => {
     });
 
     // Envía el mensaje a n8n
-    const n8nResponse = await axios.post(n8n_webhook_url, {
+    await axios.post(n8n_webhook_url, {
       userId,
       message,
     });
-    
-    const n8nTextResponse = n8nResponse.data.response || 'No se recibió una respuesta de n8n.';
 
-    // Guarda la respuesta de n8n en la base de datos
+    // Envía una respuesta inmediata al frontend. La respuesta de n8n llegará por el nuevo endpoint
+    res.status(200).json({ message: 'Mensaje enviado a n8n.' });
+  } catch (error) {
+    console.error('Error al comunicarse con n8n:', error.message);
+    res.status(500).json({ error: 'Error al procesar el mensaje.' });
+  }
+};
+
+/**
+ * Nuevo endpoint para recibir la respuesta de n8n.
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
+const receiveN8nResponse = async (req, res) => {
+  const { userId, response } = req.body;
+
+  if (!userId || !response) {
+    return res.status(400).json({ error: 'Faltan parámetros: userId y response son requeridos.' });
+  }
+
+  try {
     await Chat.create({
       userId,
-      text: n8nTextResponse,
+      text: response,
       sender: 'n8n',
     });
-
-    // Envía el historial actualizado como respuesta
-    const updatedHistory = await Chat.findAll({
-      where: { userId },
-      order: [['createdAt', 'ASC']],
-    });
-
-    res.status(200).json(updatedHistory);
+    // Aquí podrías emitir un mensaje via WebSocket si está configurado
+    res.status(200).json({ message: 'Respuesta de n8n recibida y guardada.' });
   } catch (error) {
-    console.error('Error en la comunicación con n8n:', error.message);
-    res.status(500).json({ error: 'Error al procesar el mensaje.' });
+    console.error('Error al procesar la respuesta de n8n:', error.message);
+    res.status(500).json({ error: 'Error al procesar la respuesta.' });
   }
 };
 
 module.exports = {
   getChatHistory,
   sendMessage,
+  receiveN8nResponse,
 };
