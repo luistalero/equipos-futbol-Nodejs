@@ -1,7 +1,12 @@
 const { Chat } = require('../models/associations');
 const axios = require('axios');
 
-const N8N_WEBHOOK_URL = process.env.URL_N8N_PRODUCTION || process.env.URL_N8N_TEST_PRODUCTION;
+const n8n_production_webhook_url = process.env.URL_N8N_PRODUCTION;
+const n8n_test_webhook_url = process.env.URL_N8N_TEST_PRODUCTION;
+
+const n8n_webhook_url = process.env.NODE_ENV === 'production'
+  ? n8n_production_webhook_url
+  : n8n_test_webhook_url || n8n_production_webhook_url;
 
 /**
  * Obtiene el historial de chat de un usuario específico.
@@ -41,7 +46,7 @@ const sendMessage = async (req, res) => {
     });
 
     // Envía el mensaje a n8n
-    const n8nResponse = await axios.post(N8N_WEBHOOK_URL, {
+    const n8nResponse = await axios.post(n8n_webhook_url, {
       userId,
       message,
     });
