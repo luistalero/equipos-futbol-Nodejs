@@ -33,7 +33,6 @@ wss.on('connection', ws => {
         try {
             const data = JSON.parse(message);
             if (data.type === 'auth' && data.token) {
-                // Decodifica el token para obtener el ID de usuario y guardarlo
                 const decodedToken = jwt.decode(data.token);
                 if (decodedToken && decodedToken.id) {
                     userConnections.set(decodedToken.id, ws);
@@ -46,7 +45,6 @@ wss.on('connection', ws => {
     });
 
     ws.on('close', () => {
-        // Elimina la conexión cuando el usuario se desconecta
         for (const [userId, connection] of userConnections.entries()) {
             if (connection === ws) {
                 userConnections.delete(userId);
@@ -111,6 +109,7 @@ app.post('/api/auth/suspend', (req, res) => {
     }
 });
 
+const PORT =  process.env.PORT;
 
 const startServer = async () => {
     try {
